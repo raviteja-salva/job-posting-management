@@ -212,7 +212,7 @@ const JobPostingForm = (props) => {
           ],false, true)}
 
           <div className="input-field">
-            <label>Salary Range</label>
+            <label>Salary Range (Annual CTC)</label>
             <div className="salary-range">
               <Controller
                 name="salaryRange.currency"
