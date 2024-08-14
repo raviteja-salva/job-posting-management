@@ -48317,7 +48317,8 @@
     {"city_id":"48312","city_name":"Lewisburg","state_id":"3976"},
     {"city_id":"48313","city_name":"Ravenswood","state_id":"3976"},
     {"city_id":"48314","city_name":"Summersville","state_id":"3976"},
-    {"city_id":"48315","city_name":"Dar es Salaam","state_id":"3506"}
+    {"city_id":"48315","city_name":"Dar es Salaam","state_id":"3506"},
+    {"city_id":"48316","city_name":"Remote","state_id":"3506"}
     ]
     }
     ]
