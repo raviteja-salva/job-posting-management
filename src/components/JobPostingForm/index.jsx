@@ -1,12 +1,34 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/async';
-import languageData from '../../language.json';
+import languageData from '../data/language.json';
 import { useForm, Controller } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
-import skillsData from '../../skills.json';
-import departmentOptions from './departments';
-import './index.css';
+import skillsData from '../data/skills.json';
+import departmentOptions from '../data/departments.js';
+import {
+  PopupOverlay,
+  PopupContent,
+  JobPostingFormContainer,
+  InputField,
+  Label,
+  Input,
+  TextArea,
+  CheckboxContainer,
+  SalaryInput,
+  CustomField,
+  FormActions,
+  SubmitButton,
+  ActionButton,
+  Star,
+  SalaryInputField,
+  SalaryLabel,
+  SalaryRangeContainer,
+  SalaryCheckboxContainer,
+  SalaryCheckbox,
+  SalaryCheckboxLabel,
+  CurrencySelect
+} from './styledComponents.js';
 
 const technicalSkillsOptions = skillsData.map(({ name }) => ({ value: name, label: name }));
 const languageOptions = languageData.map(({ name }) => ({ value: name, label: name }));
@@ -48,7 +70,6 @@ const initialJobPosting = {
 
 const JobPostingForm = (props) => {
  
-  console.log(departmentOptions);
   const {
     onSubmit,
     onPreview,
@@ -153,8 +174,8 @@ const JobPostingForm = (props) => {
       control={control}
       rules={{ required: isRequired }}
       render={({ field }) => (
-        <div className="input-field">
-          <label>{label}{isRequired && <span className='star'>*</span>}</label>
+        <InputField>
+          <Label>{label}{isRequired && <Star>*</Star>}</Label>
           {type === 'select' ? (
             <Select
               {...field}
@@ -163,28 +184,28 @@ const JobPostingForm = (props) => {
               placeholder={`Select ${label}`}
             />
           ) : type === 'textarea' ? (
-            <textarea {...field} className="textarea" placeholder={label} />
+            <TextArea {...field} placeholder={label} />
           ) : (
-            <input {...field} type={type} placeholder={label} />
+            <Input {...field} type={type} placeholder={label} />
           )}
-        </div>
+        </InputField>
       )}
     />
   );
 
   return (
-    <div className="popup-overlay">
-      <div className="popup-content">
+    <PopupOverlay>
+      <PopupContent>
         <h2>{editingJob ? 'Edit Job Posting' : 'Create New Job Posting'}</h2>
-        <form onSubmit={handleSubmit(onSubmitForm)} className="job-posting-form">
+        <JobPostingFormContainer onSubmit={handleSubmit(onSubmitForm)}>
           {renderField('jobTitle', 'Job Title', 'select', jobOptions, false, true)}
           <Controller
             name="jobLocation"
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
-              <div className="input-field">
-                <label>Job Locations<span className='star'>*</span></label>
+              <InputField>
+                <Label>Job Locations<Star>*</Star></Label>
                 <AsyncSelect
                   {...field}
                   isMulti
@@ -192,7 +213,7 @@ const JobPostingForm = (props) => {
                   placeholder="Search and select cities..."
                   noOptionsMessage={() => "Type to search cities"}
                 />
-              </div>
+              </InputField>
             )}
           />
           {renderField('jobType', 'Job Type', 'select', [
@@ -211,75 +232,77 @@ const JobPostingForm = (props) => {
             { value: 'Managerial', label: 'Managerial' },
           ],false, true)}
 
-          <div className="input-field">
-            <label>Salary Range (Annual CTC)</label>
-            <div className="salary-range">
-              <Controller
-                name="salaryRange.currency"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    options={currencies.map(curr => ({ value: curr, label: curr }))}
-                    placeholder="Currency"
-                    className="currency-select"
+          <SalaryInputField>
+                <SalaryLabel>Salary Range (Annual CTC)</SalaryLabel>
+                <SalaryRangeContainer>
+                  <Controller
+                    name="salaryRange.currency"
+                    control={control}
+                    render={({ field }) => (
+                      <CurrencySelect
+                        {...field}
+                        options={currencies.map(curr => ({ value: curr, label: curr }))}
+                        placeholder="Currency"
+                      />
+                    )}
                   />
-                )}
-              />
-              <Controller
-                name="salaryRange.min"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    type="number"
-                    placeholder="Min Salary"
-                    className="salary-input"
+                  <Controller
+                    name="salaryRange.min"
+                    control={control}
+                    render={({ field }) => (
+                      <SalaryInput
+                        {...field}
+                        type="number"
+                        placeholder="Min Salary"
+                      />
+                    )}
                   />
-                )}
-              />
-              <Controller
-                name="salaryRange.max"
-                control={control}
-                render={({ field }) => (
-                  <input
-                    {...field}
-                    type="number"
-                    placeholder="Max Salary"
-                    className="salary-input"
+                  <Controller
+                    name="salaryRange.max"
+                    control={control}
+                    render={({ field }) => (
+                      <SalaryInput
+                        {...field}
+                        type="number"
+                        placeholder="Max Salary"
+                      />
+                    )}
                   />
-                )}
-              />
-              <Controller
-                name="salaryRange.isVisible"
-                control={control}
-                render={({ field }) => (
-                  <label className="salary-visibility">
-                    <input
-                      type="checkbox"
-                      {...field}
-                      checked={field.value}
-                    />
-                    Visible to candidates
-                  </label>
-                )}
-              />
-            </div>
-          </div>
+                </SalaryRangeContainer>
+                <SalaryCheckboxContainer>
+                  <Controller
+                    name="salaryRange.isVisible"
+                    control={control}
+                    render={({ field }) => (
+                      <>
+                        <SalaryCheckbox
+                          type="checkbox"
+                          {...field}
+                          checked={field.value}
+                          id="salaryVisibility"
+                        />
+                        <SalaryCheckboxLabel htmlFor="salaryVisibility">
+                          Visible to candidates
+                        </SalaryCheckboxLabel>
+                      </>
+                    )}
+                  />
+                </SalaryCheckboxContainer>
+          </SalaryInputField>
 
           <Controller
             name="applicationDeadline"
             control={control}
             rules={{ required: true }}
             render={({ field }) => (
-              <div className="input-field">
-                <label>Application Deadline<span className='star'>*</span></label>
-                <input
+              <InputField>
+                <Label>Application Deadline<Star>*</Star></Label>
+                <Input
                   {...field}
                   type="date"
                   min={new Date().toISOString().split('T')[0]}
                 />
-              </div>
+              </InputField>
             )}
           />
 
@@ -307,8 +330,8 @@ const JobPostingForm = (props) => {
             name="companyLocation"
             control={control}
             render={({ field }) => (
-              <div className="input-field">
-                <label>Company Location (Head Quarters)<span className='star'>*</span></label>
+              <InputField>
+                <Label>Company Location (Head Quarters)<Star>*</Star></Label>
                 <AsyncSelect
                   {...field}
                   loadOptions={loadCityOptions}
@@ -316,37 +339,37 @@ const JobPostingForm = (props) => {
                   noOptionsMessage={() => "Type to search cities"}
                   required
                 />
-              </div>
+              </InputField>
             )}
           />
 
           <h2>Contact Information</h2>
-          <div className="input-field">
-            <label>Recruiter Name<span className='star'>*</span></label>
-            <div className="recruiter-name">
+          <InputField>
+            <Label>Recruiter Name<Star>*</Star></Label>
+            <InputField>
               <Controller
                 name="recruiterName"
                 control={control}
                 render={({ field }) => (
-                  <input {...field} type="text" placeholder="Recruiter Name" />
+                  <Input {...field} type="text" placeholder="Recruiter Name" />
                 )}
               />
               <Controller
                 name="recruiterNameVisible"
                 control={control}
                 render={({ field }) => (
-                  <label className="recruiter-name-visibility">
-                    <input
+                  <CheckboxContainer>
+                    <Input
                       type="checkbox"
                       {...field}
                       checked={field.value}
                     />
                     Visible to candidates
-                  </label>
+                  </CheckboxContainer>
                 )}
               />
-            </div>
-          </div>
+            </InputField>
+          </InputField>
           {renderField('recruiterContactEmail', 'Recruiter Contact Email', 'email')}
           {renderField('recruiterContactPhoneNumber', 'Recruiter Contact Phone Number', 'tel')}
 
@@ -361,51 +384,51 @@ const JobPostingForm = (props) => {
           {renderField('backgroundCheckRequirements', 'Background Check Requirements', 'textarea')}
           {renderField('linkToApply', 'Link to Apply', 'url', null, false, true)}
 
-          <div className="input-field">
-            <label>Custom Fields</label>
+          <InputField>
+            <Label>Custom Fields</Label>
             {Array.isArray(customFields) && customFields.map((field, index) => (
-              <div key={index} className="custom-field">
-                <input
+              <CustomField key={index}>
+                <Input
                   type="text"
                   placeholder="Field Name"
                   value={field.key}
                   onChange={(e) => handleCustomFieldChange(index, 'key', e.target.value)}
                 />
-                <input
+                <Input
                   type="text"
                   placeholder="Field Value"
                   value={field.value}
                   onChange={(e) => handleCustomFieldChange(index, 'value', e.target.value)}
                 />
-                <label>
-                  <input
+                <CheckboxContainer>
+                  <Input
                     type="checkbox"
                     checked={field.isMandatory}
                     onChange={(e) => handleCustomFieldChange(index, 'isMandatory', e.target.checked)}
                   />
                   Mandatory
-                </label>
-                <button type="button" onClick={() => setCustomFields(prev => prev.filter((_, i) => i !== index))}>Remove</button>
-              </div>
+                </CheckboxContainer>
+                <ActionButton type="button" onClick={() => setCustomFields(prev => prev.filter((_, i) => i !== index))}>Remove</ActionButton>
+              </CustomField>
             ))}
-            <button type="button" onClick={() => setCustomFields(prev => [...prev, { key: '', value: '', isMandatory: false }])}>Add Custom Field</button>
-          </div>
-
-          <div className="form-actions">
-            <button type="submit">
+            <ActionButton type="button" onClick={() => setCustomFields(prev => [...prev, { key: '', value: '', isMandatory: false }])}>Add Custom Field</ActionButton>
+          </InputField>
+                       
+          <FormActions>
+            <SubmitButton>
               {editingJob ? 'Update Job Posting' : 'Create Job Posting'}
-            </button>
+            </SubmitButton>
             {!template && (
-              <button type="button" onClick={handleSaveTemplate}>
+              <ActionButton type="button" onClick={handleSaveTemplate}>
                 Save Template
-              </button>
+              </ActionButton>
             )}
-            <button type="button" onClick={handlePreview}>Preview</button>
-            <button type="button" onClick={onClose}>Cancel</button>
-          </div>
-        </form>
-      </div>
-      </div>
+            <ActionButton type="button" onClick={handlePreview}>Preview</ActionButton>
+            <ActionButton type="button" onClick={onClose}>Cancel</ActionButton>
+          </FormActions>
+        </JobPostingFormContainer>
+      </PopupContent>
+    </PopupOverlay>
   );
 };
 
