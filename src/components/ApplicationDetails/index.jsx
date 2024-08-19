@@ -1,5 +1,7 @@
 import React from 'react';
-import {ModalOverlay, ModalContent, ProfileSection, SectionTitle, Button, ShortlistButton, ApplicationHistoryTable, TableHeader, TableCell} from './styledComponents.js';
+
+import { ModalOverlay, ModalContent, Button, Link , ButtonContainer , ShortlistButton , ProfileTitle, ProfileSection, SectionTitle, InfoText, SkillsList, SkillItem, ApplicationHistoryTable, TableHeader, TableCell } from './styledComponents';
+
 
 const ApplicationDetails = ({ candidate, onClose, onShortlist, isShortlisted }) => {
   const handleViewResume = () => {
@@ -9,40 +11,46 @@ const ApplicationDetails = ({ candidate, onClose, onShortlist, isShortlisted }) 
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
-        <h2>{candidate.name}'s Profile</h2>
+        <ProfileTitle>{candidate.name}'s Application</ProfileTitle>
+        
         <ProfileSection>
           <SectionTitle>Professional Summary</SectionTitle>
-          <p>{candidate.summary}</p>
+          <InfoText>{candidate.summary}</InfoText>
         </ProfileSection>
+        
         <ProfileSection>
           <SectionTitle>Contact Information</SectionTitle>
-          <p>Location: {candidate.location}</p>
-          <p>Email: {candidate.email}</p>
-          <p>Phone: {candidate.phone}</p>
-          {candidate.linkedin_url !== "" && <p>LinkedIn: <a href={candidate.linkedin_url} rel="noreferrer" target="_blank">View LinkedIn Profile</a></p>}
-          {candidate.portfolio_website !== "" && <p>Portfolio: <a href={candidate.portfolio_website} rel="noreferrer" target="_blank">View Portfolio</a></p>}
+          <InfoText>Location: {candidate.location}</InfoText>
+          <InfoText>Email: {candidate.email}</InfoText>
+          <InfoText>Phone: {candidate.phone}</InfoText>
+          {candidate.linkedin_url && <InfoText>LinkedIn: <Link href={candidate.linkedin_url} target="_blank" rel="noreferrer">View LinkedIn Profile</Link></InfoText>}
+          {candidate.portfolio_website && <InfoText>Portfolio: <Link href={candidate.portfolio_website} target="_blank" rel="noreferrer">View Portfolio</Link></InfoText>}
         </ProfileSection>
+        
         <ProfileSection>
           <SectionTitle>Education</SectionTitle>
-          <p>Degree: {candidate.highest_degree_obtained}</p>
-          <p>Graduation: {candidate.graduation_period}</p>
-          <p>GPA: {candidate.gpa}</p>
+          <InfoText>Degree: {candidate.highest_degree_obtained}</InfoText>
+          <InfoText>Graduation: {candidate.graduation_period}</InfoText>
+          <InfoText>GPA: {candidate.gpa}</InfoText>
         </ProfileSection>
+        
         <ProfileSection>
           <SectionTitle>Skills</SectionTitle>
-          <ul>
+          <SkillsList>
             {candidate.skills.map((skill, index) => (
-              <li key={index}>{skill}</li>
+              <SkillItem key={index}>{skill}</SkillItem>
             ))}
-          </ul>
+          </SkillsList>
         </ProfileSection>
+        
         <ProfileSection>
           <SectionTitle>Additional Information</SectionTitle>
-          <p>Location: {candidate.location}</p>
-          <p>Willing to Relocate: {candidate.willing_to_relocate}</p>
-          <p>Willing to Travel: {candidate.willing_to_travel}</p>
+          <InfoText>Willing to Relocate: {candidate.willing_to_relocate}</InfoText>
+          <InfoText>Willing to Travel: {candidate.willing_to_travel}</InfoText>
         </ProfileSection>
-        <SectionTitle>Application History</SectionTitle>
+        
+        <ProfileSection>
+          <SectionTitle>Application History</SectionTitle>
           <ApplicationHistoryTable>
             <thead>
               <tr>
@@ -61,18 +69,21 @@ const ApplicationDetails = ({ candidate, onClose, onShortlist, isShortlisted }) 
               ))}
             </tbody>
           </ApplicationHistoryTable>
-        <Button onClick={handleViewResume}>View Resume</Button>
-        <ShortlistButton 
-          onClick={() => onShortlist(candidate.id)} 
-          isShortlisted={isShortlisted}
-        >
-          {isShortlisted ? 'Remove from Shortlist' : 'Shortlist Candidate'}
-        </ShortlistButton>
-        <Button onClick={onClose}>Close</Button>
+        </ProfileSection>
+        
+        <ButtonContainer>
+          <Button onClick={handleViewResume}>View Resume</Button>
+          <ShortlistButton 
+            onClick={() => onShortlist(candidate.id)} 
+            isShortlisted={isShortlisted}
+          >
+            {isShortlisted ? 'Remove from Shortlist' : 'Shortlist Candidate'}
+          </ShortlistButton>
+          <Button onClick={onClose}>Close</Button>
+        </ButtonContainer>
       </ModalContent>
     </ModalOverlay>
   );
 };
-
 
 export default ApplicationDetails;
