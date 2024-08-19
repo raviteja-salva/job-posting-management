@@ -61,8 +61,6 @@ const ApplicationsTable = ({ candidates, onCandidateClick, shortlistedCandidates
   const indexOfFirstCandidate = indexOfLastCandidate - candidatesPerPage;
   const currentCandidates = filteredCandidates.slice(indexOfFirstCandidate, indexOfLastCandidate);
 
-  const totalPages = Math.ceil(filteredCandidates.length / candidatesPerPage);
-
   const handlePageChange = useCallback((pageNumber) => {
     setCurrentPage(pageNumber);
   }, []);
@@ -134,7 +132,7 @@ const ApplicationsTable = ({ candidates, onCandidateClick, shortlistedCandidates
           </Table>
           <Pagination
             currentPage={currentPage}
-            totalPosts={currentCandidates.length}
+            totalPosts={filteredCandidates.length}
             postsPerPage={10}
             paginate={handlePageChange}
           />
